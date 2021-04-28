@@ -11,7 +11,7 @@ create an event notification under the 'properties' tab called 'textractDemoS3Up
 - events = Put and Multipart upload completed
 - Destination = textractDemoS3UploadQ
 
-'''
+```
 {
  "Version": "2012-10-17",
  "Statement": [
@@ -31,7 +31,7 @@ create an event notification under the 'properties' tab called 'textractDemoS3Up
   }
  ]
 }
-'''
+```
 
 Show DetectDocumentText output
 
