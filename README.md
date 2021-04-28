@@ -2,10 +2,11 @@
 
 #### Create an SQS Queue for S3 Uploads
 1. textractDemoS3UploadQ for .png files in the 'uploads' prefix
+2. Set the visibility timeout to 60 sec (10x the function timeout, from below)
 
 #### Create an S3 Bucket
 1. troiano-demo-textract
-2. create a folder 'uploads/'
+2. create a folder 'uploads'
 3. Note the ARN
 
 #### Add access to SQS for the S3 Bucket
@@ -37,6 +38,34 @@
    - folder = uploads
    - events = Put and Multipart upload completed
    - Destination = textractDemoS3UploadQ
+
+#### Async Function
+1. Create a new function called textractDemoAsync
+2. Runtime = Python 3.7
+3. Permissions = Create a new role... 
+   <br />(we'll update the roles permissions later)
+4. Paste the code (lambda_function_async.py)
+5. Configuration tab, choose General configuration and set the timeout to 10 sec
+6. 
+
+Create CloudWatch Event to schedule the Lambda function to pull from SQS and disable it
+
+
+
+6. Update the role permissions by choosing Permissions from the list under the Configuration tab
+   <br />Under Resource-based policy, choose Add permissions
+   - AWS Service
+   - Service = SQS
+   - Slource ARN = arn:aws:sqs:us-east-1:089091079446:textractDemoS3UploadQ
+   - Lambda:InvokeFunction
+   - Statement ID = textractDemoSQSInvoke ---- Request failed with status code 502
+6. 
+
+
+
+Later Updates
+- Function in VPC with Endpoints
+
 
 
 Show DetectDocumentText output
