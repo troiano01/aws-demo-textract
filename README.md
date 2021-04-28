@@ -1,15 +1,15 @@
 #aws-demo-textract
 
-##Create an SQS Queue for S3 Uploads
-textractDemoS3UploadQ for .png files in the 'uploads' prefix
+#### Create an SQS Queue for S3 Uploads
+1. textractDemoS3UploadQ for .png files in the 'uploads' prefix
 
-##Create an S3 Bucket
-troiano-demo-textract
-create a folder 'uploads/'
-create an event notification under the 'properties' tab called 'textractDemoS3UploadComplete'
-- folder = uploads
-- events = Put and Multipart upload completed
-- Destination = textractDemoS3UploadQ
+#### Create an S3 Bucket
+1. troiano-demo-textract
+2. create a folder 'uploads/'
+3. Note the ARN
+
+#### Add access to SQS for the S3 Bucket
+(Needs to be added before the Event Notification step below or S3 will not be able to validate its access)
 
 ```
 {
@@ -32,6 +32,12 @@ create an event notification under the 'properties' tab called 'textractDemoS3Up
  ]
 }
 ```
+#### Add the S3 Event Notification
+1. create an event notification under the 'properties' tab called 'textractDemoS3UploadComplete'
+   - folder = uploads
+   - events = Put and Multipart upload completed
+   - Destination = textractDemoS3UploadQ
+
 
 Show DetectDocumentText output
 
