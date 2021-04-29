@@ -4,16 +4,47 @@ This demo is targeted toward SAs presenting to their customers. Any overview sli
 
 Future plans are to add the use of VPC endpoints, as many of our customers prefer that path. A Part II will be added to include themodifications and additional components to support Multipage documents using the Asynchronous Operations.
 
-The overall architecture follows the [AWS Sample Code for Large scale document processing with Amazon Textract](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing), with this tailored for a demo to fit within a 1-2 hour customer call versus a longer workshop format.
+The overall architecture follows the [AWS Sample Code for Large scale document processing with Amazon Textract](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing), with this tailored for a demo to fit within a 1-2 hour customer call versus a longer workshop format. The Sample Code repository has a more complete solution build customers can use for reference. Where it uses AWS CDK to deploy, this demo walks through building the base components using the console.
 
 ## Architecture
 *from above sample repo*<br />
 ![Architecture Diagram](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing/blob/master/arch.png)
 
-
+## Architecture Components and Workflow
+1. The process starts with a sample file uploaded to S3. For this we use a simple python script.
+2. Once uploaded, the 
+3. 
 
 ## Demo Build Process
 - Create the S3 bucket
+
+## S3 Upload
+```
+import boto3
+
+# AWS Profiles contain the region and output format (in .aws/config) and the 
+# access and secret keys (in .aws/credentials)
+session = boto3.session.Session( profile_name = 'aws-main' )
+
+# Define the S3 rersource
+s3 = session.resource( 's3' )
+
+# File to upload
+demoFile = 'demofiles/employmentapp.png'
+
+# Bucket to which the file will be uploaded
+demoBucket = 'troiano-demo-textract'
+
+# Key includes the filename and s3 prefixes (folders) without a preceeding '/'
+demoKey1 = 'uploads/employmentapp1.png'
+
+s3.meta.client.upload_file(
+    Filename = demoFile,
+    Bucket = demoBucket,
+    Key = demoKey1
+)
+```
+
 ## Create an SQS Queue for S3 Uploads
 1. textractDemoS3UploadQ for .png files in the 'uploads' prefix
 2. Set the visibility timeout to 60 sec (10x the function timeout, from below)
