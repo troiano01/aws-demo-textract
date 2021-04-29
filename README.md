@@ -1,13 +1,23 @@
-#aws-demo-textract
+# aws-demo-textract
 
-#### Create an SQS Queue for S3 Uploads
+This demo is targeted toward SAs presenting to their customers. Any overview slides used at the beginning can be tailored to the specific case. Initial version will cover Detecting and Analyzing Text for Single-paged documents using Textract's Synchronous Operations.
+
+Future plans are to add the use of VPC endpoints, as many of our customers prefer that path. A Part II will be added to include themodifications and additional components to support Multipage documents using the Asynchronous Operations.
+
+The overall architecture follows the [AWS Sample Code for Large scale document processing with Amazon Textract](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing), with this tailored for a demo to fit within a 1-2 hour customer call versus a longer workshop format.
+
+## Architecture
+![Architecture Diagram](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing/blob/master/arch.png)
+
+
+## Create an SQS Queue for S3 Uploads
 1. textractDemoS3UploadQ for .png files in the 'uploads' prefix
 2. Set the visibility timeout to 60 sec (10x the function timeout, from below)
 
 Configuring a queue as an event source
 
 
-#### Create an S3 Bucket
+## Create an S3 Bucket
 1. troiano-demo-textract
 2. create a folder 'uploads'
 3. Note the ARN
@@ -61,9 +71,6 @@ Add the SQS Event Trigger
 - Leave the defaults and uncheck Enable trigger (will enable it later)
 
 Create CloudWatch Event to schedule the Lambda function to pull from SQS and disable it
-
-
-
 
 
 
