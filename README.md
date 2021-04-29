@@ -2,18 +2,24 @@
 
 This demo is targeted toward SAs presenting to their customers. Any overview slides used at the beginning can be tailored to the specific case. Initial version will cover Detecting and Analyzing Text for Single-paged documents using Textract's Synchronous Operations.
 
-Future plans are to add the use of VPC endpoints, as many of our customers prefer that path. A Part II will be added to include themodifications and additional components to support Multipage documents using the Asynchronous Operations.
+Future plans are to add the use of VPC endpoints, as many of our customers prefer that path. A Part II will be added to include the modifications and additional components to support Multipage documents using the Asynchronous Operations. DynamoDB can be added to store document metadata, both in its incoming and processed states.
 
-The overall architecture follows the [AWS Sample Code for Large scale document processing with Amazon Textract](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing), with this tailored for a demo to fit within a 1-2 hour customer call versus a longer workshop format. The Sample Code repository has a more complete solution build customers can use for reference. Where it uses AWS CDK to deploy, this demo walks through building the base components using the console.
+The overall architecture follows the [AWS Sample Code for Large scale document processing with Amazon Textract](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing), and is tailored for a demo to fit within a 1-2 hour customer call versus a longer workshop format. The Sample Code repository has a more complete solution build customers can use for reference. Where it uses AWS CDK to deploy, this demo walks through building the base components using the console. The code provided below is for demonstative purposes only and does not include a production-ready user experience and error handling.
 
 ## Architecture
-*from above sample repo*<br />
+**from the above sample GitHub repository*<br />
 ![Architecture Diagram](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing/blob/master/arch.png)
 
 ## Architecture Components and Workflow
 1. The process starts with a sample file uploaded to S3. For this we use a simple python script.
-2. Once uploaded, the 
-3. 
+2. Once uploaded, the S3 Bucket uses an Event Notification to send a message to an Amazon SQS queue.
+3. This SQS queue is set as a trigger for a Lambda function...
+4. The Lambda function obtains the S3 Bucket and file from the SQS queue message and calls Textract's analyze_document API
+5. It next calls the Document function from a [Textract Response Parser](https://github.com/aws-samples/amazon-textract-response-parser) (referenced in the [Textract documentation](https://docs.aws.amazon.com/textract/latest/dg/other-examples.html)) that processes the Textract output, returning it as a custome Document object that contains pages as Python Lists. These lists make it easier to parse the document into a readable format. 
+6. The function parses the output into a summary and publishes ...
+7. Finally it saves the output and summary in two files...
+8. A simple python script reads the completion message from the SQS queue. A customer's application can poll this queue for completed documents or use one or more of SNS' protocols to push completion notification.
+9. If DynamoDB is used for document metadata, the completion state and any relevant data can be updated.
 
 ## Demo Build Process
 - Create the S3 bucket
