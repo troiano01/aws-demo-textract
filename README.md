@@ -2,7 +2,11 @@
 
 This demo is targeted toward SAs presenting to their customers. Any overview slides used at the beginning can be tailored to the specific case. Initial version will cover Detecting and Analyzing Text for Single-paged documents using Textract's Synchronous Operations.
 
-Future plans are to add the use of VPC endpoints, as many of our customers prefer that path. A Part II will be added to include the modifications and additional components to support Multipage documents using the Asynchronous Operations. DynamoDB can be added to store document metadata, both in its incoming and processed states.
+Future plans:
+- Add a Deadletter Queue
+- Add VPC endpoints, as many of our customers prefer that path
+- Part II will be added to include the modifications and additional components to support Multipage documents using the Asynchronous Operations
+- DynamoDB can be added to store document metadata, both in its incoming and processed states.
 
 The overall architecture follows the [AWS Sample Code for Large scale document processing with Amazon Textract](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing), and is tailored for a demo to fit within a 1-2 hour customer call versus a longer workshop format. The Sample Code repository has a more complete solution build customers can use for reference. Where it uses AWS CDK to deploy, this demo walks through building the base components using the console. The code provided below is for demonstative purposes only and does not include a production-ready user experience and error handling.
 
@@ -21,42 +25,12 @@ The overall architecture follows the [AWS Sample Code for Large scale document p
 8. A simple python script reads the completion message from the SQS queue. A customer's application can poll this queue for completed documents or use one or more of SNS' protocols to push completion notification.
 9. If DynamoDB is used for document metadata, the completion state and any relevant data can be updated.
 
-## Demo Build Process
-- Create the S3 bucket
-
-## S3 Upload
-```
-import boto3
-
-# AWS Profiles contain the region and output format (in .aws/config) and the 
-# access and secret keys (in .aws/credentials)
-session = boto3.session.Session( profile_name = 'aws-main' )
-
-# Define the S3 rersource
-s3 = session.resource( 's3' )
-
-# File to upload
-demoFile = 'demofiles/employmentapp.png'
-
-# Bucket to which the file will be uploaded
-demoBucket = 'troiano-demo-textract'
-
-# Key includes the filename and s3 prefixes (folders) without a preceeding '/'
-demoKey1 = 'uploads/employmentapp1.png'
-
-s3.meta.client.upload_file(
-    Filename = demoFile,
-    Bucket = demoBucket,
-    Key = demoKey1
-)
-```
-
 ## Create an SQS Queue for S3 Uploads
 1. textractDemoS3UploadQ for .png files in the 'uploads' prefix
 2. Set the visibility timeout to 60 sec (10x the function timeout, from below)
-
-Configuring a queue as an event source
-
+3. Keep everything else as the default values
+4. Note the ARN to be used in the Event Notification configuration for the S3 Bucket<br /><br />
+![textractDemoS3UploadQ Screenshot](./images/textractDemoS3UploadQ.png)
 
 ## Create an S3 Bucket
 1. troiano-demo-textract
@@ -113,6 +87,32 @@ Add the SQS Event Trigger
 
 Create CloudWatch Event to schedule the Lambda function to pull from SQS and disable it
 
+## S3 Upload
+```
+import boto3
+
+# AWS Profiles contain the region and output format (in .aws/config) and the 
+# access and secret keys (in .aws/credentials)
+session = boto3.session.Session( profile_name = 'aws-main' )
+
+# Define the S3 rersource
+s3 = session.resource( 's3' )
+
+# File to upload
+demoFile = 'demofiles/employmentapp.png'
+
+# Bucket to which the file will be uploaded
+demoBucket = 'troiano-demo-textract'
+
+# Key includes the filename and s3 prefixes (folders) without a preceeding '/'
+demoKey1 = 'uploads/employmentapp1.png'
+
+s3.meta.client.upload_file(
+    Filename = demoFile,
+    Bucket = demoBucket,
+    Key = demoKey1
+)
+```
 
 
 
