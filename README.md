@@ -4,6 +4,9 @@
 1. textractDemoS3UploadQ for .png files in the 'uploads' prefix
 2. Set the visibility timeout to 60 sec (10x the function timeout, from below)
 
+Configuring a queue as an event source
+
+
 #### Create an S3 Bucket
 1. troiano-demo-textract
 2. create a folder 'uploads'
@@ -52,6 +55,10 @@
    - Add AWSLambdaSQSQueueExecutionRole
    - Add AWSLambdaBasicExecutionRole 
    - Remove any others
+
+Add the SQS Event Trigger
+- Choose the Q
+- Leave the defaults and uncheck Enable trigger (will enable it later)
 
 Create CloudWatch Event to schedule the Lambda function to pull from SQS and disable it
 
