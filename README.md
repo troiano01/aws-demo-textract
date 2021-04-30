@@ -3,7 +3,7 @@
 ## Overview
 This demo is targeted toward SAs presenting to customers. Any overview slides used at the beginning can be tailored to the specific case. Initial version will cover Detecting and Analyzing Text for Single-paged documents using Textract's Synchronous Operations.
 
-Future plans:
+#### Future plans:
 - Add a Deadletter Queue
 - Add VPC endpoints, as many of our customers prefer that path
 - Part II will be added to include the modifications and additional components to support Multipage documents using the Asynchronous Operations with a 2-3 page .pdf example.
