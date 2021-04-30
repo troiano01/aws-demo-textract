@@ -84,7 +84,7 @@ def json2s3(output_body, output_bucket, output_file):
 
     s3 = boto3.client('s3')
     s3.put_object(
-        Body = output_body,
+        Body = output_body.encode('utf-8'),
         Bucket = output_bucket,
         Key = output_file
     )
