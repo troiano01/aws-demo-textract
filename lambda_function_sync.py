@@ -70,7 +70,7 @@ def lambda_handler(event, context):
         
         # Write JSON response to a file in s3
         json2s3(json.dumps(response['Blocks']), eventBucket, outputJsonFile1)
-        json2s3(json.dumps(parsedOutput), eventBucket, outputJsonFile2)
+        json2s3(parsedOutput, eventBucket, outputJsonFile2)
         
         # Post notification that the file processing is completed.
         completionTime = datetime.now()

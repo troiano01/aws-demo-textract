@@ -100,7 +100,7 @@ Add the following as an additional statement
 ![S3 Bucket Folders](./images/s3-folders-1.png)<br />
 ![S3 Bucket Folders under processed](./images/s3-folders-2.png)
 
-## Add access to SQS for the S3 Bucket
+## Add Access to SQS for the S3 Bucket
 **Needs to be added before the Event Notification step below or S3 will not be able to validate its access*
 1. Open the console for the textractDemoS3UploadQ queue
 2. Add the policy below under the Access policy tab. Confirm the bucket name and queue name in the policy match what was used in creating them and populate the *account number* placeholder.
@@ -182,8 +182,8 @@ def lambda_handler(event, context):
         eventKey = urllib.parse.unquote_plus(msg['Records'][0]['s3']['object']['key'])
         uploadedFullFilename = os.path.basename(eventKey)
         uploadedFilename = os.path.splitext(uploadedFullFilename)[0]
-        jsonOutputPrefix = "/output/json/"
-        summaryOutputPrefix = "/output/summaries/"
+        jsonOutputPrefix = "processed/json/"
+        summaryOutputPrefix = "processed/summaries/"
         outputJsonFile1 = jsonOutputPrefix + uploadedFilename + ".json"
         outputJsonFile2 = summaryOutputPrefix + uploadedFilename + ".txt"
         
@@ -229,7 +229,7 @@ def lambda_handler(event, context):
             parsedOutput = parsedOutput + '-\nfields\n'
             parsedOutput = parsedOutput + '-----------------------------------------------------\n'
             for field in page.form.fields:
-                parsedOutput = parsedOutput + field.key.text + ': ' + field.value.text + '\n'
+                parsedOutput = parsedOutput + field.key.text + ', ' + field.value.text + '\n'
             parsedOutput = parsedOutput + '\n'
     
         # Print to the application log
@@ -237,11 +237,12 @@ def lambda_handler(event, context):
         
         # Write JSON response to a file in s3
         json2s3(json.dumps(response['Blocks']), eventBucket, outputJsonFile1)
-        json2s3(json.dumps(parsedOutput), eventBucket, outputJsonFile2)
+        json2s3(parsedOutput, eventBucket, outputJsonFile2)
         
         # Post notification that the file processing is completed.
         completionTime = datetime.now()
         snsMessage = completionTime.strftime("%d/%m/%Y %H:%M:%S") + ": File " + uploadedFullFilename + " has been processed."
+        print(snsMessage)
         response = textract2Sns(snsMessage)
         
         return {'statusCode': 200}
@@ -250,7 +251,7 @@ def json2s3(output_body, output_bucket, output_file):
 
     s3 = boto3.client('s3')
     s3.put_object(
-        Body = output_body,
+        Body = output_body.encode('utf-8'),
         Bucket = output_bucket,
         Key = output_file
     )
@@ -270,8 +271,7 @@ def textract2Sns(output_body):
     except Exception as e:
         print(e)
         return(e)
-    
-        return {'statusCode': 200} 
+
 ```
 
 5. Configuration tab, choose General configuration and set the timeout to 10 sec
