@@ -263,7 +263,7 @@ def textract2Sns(output_body):
     try:
         sns = boto3.client('sns')
         response = sns.publish(
-            TopicArn = "arn:aws:sns:us-east-1:089091079446:textractSnsDemo",    
+            TopicArn = "arn:aws:sns:us-east-1:<Account Number>:textractSnsDemo",    
             Message = output_body 
         )
         return {'statusCode': 200}
