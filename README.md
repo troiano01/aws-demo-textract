@@ -24,11 +24,13 @@ The overall architecture follows the [AWS Sample Code for Large scale document p
 ## Architecture Components and Workflow
 1. The process starts with a sample file uploaded to S3. For this we use a simple python script.
 2. Once uploaded, the S3 Bucket uses an Event Notification to send a message to an Amazon SQS queue.
-3. This SQS queue is set as a trigger for a Lambda function...
+3. This SQS queue is set as a trigger for the (Textract Synchornous Operations) Lambda function
 4. The Lambda function obtains the S3 Bucket and file from the SQS queue message and calls Textract's analyze_document API
-5. It next calls the Document function from a [Textract Response Parser](https://github.com/aws-samples/amazon-textract-response-parser) (referenced in the [Textract documentation](https://docs.aws.amazon.com/textract/latest/dg/other-examples.html)) that processes the Textract output, returning it as a custome Document object that contains pages as Python Lists. These lists make it easier to parse the document into a readable format. 
-6. The function parses the output into a summary and publishes ...
-7. Finally it saves the output and summary in two files...
+5. It next calls the Document function from a [Textract Response Parser](https://github.com/aws-samples/amazon-textract-response-parser) (referenced in the [Textract documentation](https://docs.aws.amazon.com/textract/latest/dg/other-examples.html)) that processes the Textract output, returning it as a custom Document object containing pages as Python List objects. These lists make it easier to parse the document into a readable format. 
+6. The function parses the output into a readable summary.
+7. Finally it saves the output and summary in two files
+    - A text file with the readable summary
+    - A json file with the Textract Analyze output
 8. A simple python script reads the completion message from the SQS queue. A customer's application can poll this queue for completed documents or use one or more of SNS' protocols to push completion notification.
 9. If DynamoDB is used for document metadata, the completion state and any relevant data can be updated.
 
@@ -295,4 +297,26 @@ s3.meta.client.upload_file(
 )
 ```
 
-Show DetectDocumentText output
+## Pull the Completion Message from SQS
+```
+import boto3
+import json
+
+# The AWS Profile contains the region and output format (in .aws/config) and the 
+# access and secret keys (in .aws/credentials)
+session = boto3.session.Session( profile_name = 'aws-main' )
+
+# Get the service resource
+sqs = session.resource( 'sqs' )
+
+# Get the queue
+queue = sqs.get_queue_by_name(QueueName = 'textractDemoQueue')
+
+# Process messages by printing out body and optional author name
+messages = queue.receive_messages()
+
+for message in messages:
+    msg = json.loads(message.body)
+    print(msg['Message'])
+    message.delete()
+```
