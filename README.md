@@ -66,6 +66,26 @@ The overall architecture follows the [AWS Sample Code for Large scale document p
 ![textractDemoCompletionTopicSub Screenshot](./images/textractDemoCompletionTopicSub.png)
 <br /><br />
 
+## Update the Completion Queue Access Policy
+Add the following as an additional statement
+```
+,
+    {
+      "Sid": "topic-subscription-arn",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "SQS:SendMessage",
+      "Resource": "arn:aws:sqs:us-east-2:<Account Number>:textractDemoQ",
+      "Condition": {
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:sns:us-east-2:<Account Number>:textractDemoCompletionTopic"
+        }
+      }
+    }
+```
+
 ## Create an S3 Bucket
 1. Bucket name = troiano-demo-textract
 2. Keep everything as their default values<br /><br />

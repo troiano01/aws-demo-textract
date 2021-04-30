@@ -12,7 +12,10 @@ sqs = session.resource( 'sqs' )
 queue = sqs.get_queue_by_name(QueueName = 'textractDemoQ')
 
 # Process messages by printing out body and optional author name
-messages = queue.receive_messages()
+try:
+    messages = queue.receive_messages()
+except Exception as e:
+    print(e)
 
 for message in messages:
     msg = json.loads(message.body)

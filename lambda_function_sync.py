@@ -75,6 +75,7 @@ def lambda_handler(event, context):
         # Post notification that the file processing is completed.
         completionTime = datetime.now()
         snsMessage = completionTime.strftime("%d/%m/%Y %H:%M:%S") + ": File " + uploadedFullFilename + " has been processed."
+        print(snsMessage)
         response = textract2Sns(snsMessage)
         
         return {'statusCode': 200}
@@ -103,5 +104,3 @@ def textract2Sns(output_body):
     except Exception as e:
         print(e)
         return(e)
-    
-        return {'statusCode': 200} 
