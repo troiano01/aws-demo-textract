@@ -1,20 +1,30 @@
 import json
 import boto3
+import os
 import urllib.parse
+from datetime import datetime
 from trp import Document
 
 def lambda_handler(event, context):
     
     for record in event['Records']:
         
-        # Get the bucket and filename (key) from the event
+        # Get the bucket and filename (key) from the event and set the output filenames
         msg = json.loads(record['body'])
         eventBucket = msg['Records'][0]['s3']['bucket']['name']
         eventKey = urllib.parse.unquote_plus(msg['Records'][0]['s3']['object']['key'])
+        uploadedFullFilename = os.path.basename(eventKey)
+        uploadedFilename = os.path.splitext(uploadedFullFilename)[0]
+        jsonOutputPrefix = "/output/json/"
+        summaryOutputPrefix = "/output/summaries/"
+        outputJsonFile1 = jsonOutputPrefix + uploadedFilename + ".json"
+        outputJsonFile2 = summaryOutputPrefix + uploadedFilename + ".txt"
         
-        # print the bucket and filename to the log
+        # print the bucket and filename to the application log
         print("Bucket: " + eventBucket)
         print("Path & Filename: " + eventKey)
+        print("JSON output in " + outputJsonFile1)
+        print("Summary output in " + outputJsonFile2)
         
         # Create the Textract session and call analyze_document()
         client = boto3.client('textract')
@@ -26,7 +36,6 @@ def lambda_handler(event, context):
         # Parse JSON response from Textract using amazon-textract-response-parser
         # https://github.com/aws-samples/amazon-textract-response-parser
         doc = Document(response)
-        
         parsedOutput = ''
     
         # Iterate over elements in the document (print output appears in the application log)
@@ -56,14 +65,17 @@ def lambda_handler(event, context):
                 parsedOutput = parsedOutput + field.key.text + ': ' + field.value.text + '\n'
             parsedOutput = parsedOutput + '\n'
     
+        # Print to the application log
         print(parsedOutput)
         
         # Write JSON response to a file in s3
-        #json2s3(json.dumps(response['Blocks']), eventBucket, outputJsonFile1)
-        #json2s3(json.dumps(response), eventBucket, outputJsonFile2)
+        json2s3(json.dumps(response['Blocks']), eventBucket, outputJsonFile1)
+        json2s3(json.dumps(parsedOutput), eventBucket, outputJsonFile2)
         
-        #response = textract2Sns(json.dumps(response['Blocks']))
-        response = textract2Sns(parsedOutput)
+        # Post notification that the file processing is completed.
+        completionTime = datetime.now()
+        snsMessage = completionTime.strftime("%d/%m/%Y %H:%M:%S") + ": File " + uploadedFullFilename + " has been processed."
+        response = textract2Sns(snsMessage)
         
         return {'statusCode': 200}
         
@@ -86,7 +98,6 @@ def textract2Sns(output_body):
             TopicArn = "arn:aws:sns:us-east-1:089091079446:textractSnsDemo",    
             Message = output_body 
         )
-        print(response)
         return {'statusCode': 200}
         
     except Exception as e:
