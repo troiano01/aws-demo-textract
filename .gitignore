@@ -6,7 +6,7 @@
 
 # Lambda Layer Install Files
 *-layer.zip
-[Pp]ython/
+[Pp]ython-layer/
 
 # From other repo
 # https://github.com/aws-samples/amazon-textract-response-parser
