@@ -1,7 +1,7 @@
 # aws-demo-textract
 
 ## Overview
-This demo is targeted toward SAs presenting to their customers. Any overview slides used at the beginning can be tailored to the specific case. Initial version will cover Detecting and Analyzing Text for Single-paged documents using Textract's Synchronous Operations.
+This demo is targeted toward SAs presenting to customers. Any overview slides used at the beginning can be tailored to the specific case. Initial version will cover Detecting and Analyzing Text for Single-paged documents using Textract's Synchronous Operations.
 
 Future plans:
 - Add a Deadletter Queue
