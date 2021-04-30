@@ -15,8 +15,8 @@ def lambda_handler(event, context):
         eventKey = urllib.parse.unquote_plus(msg['Records'][0]['s3']['object']['key'])
         uploadedFullFilename = os.path.basename(eventKey)
         uploadedFilename = os.path.splitext(uploadedFullFilename)[0]
-        jsonOutputPrefix = "/output/json/"
-        summaryOutputPrefix = "/output/summaries/"
+        jsonOutputPrefix = "processed/json/"
+        summaryOutputPrefix = "processed/summaries/"
         outputJsonFile1 = jsonOutputPrefix + uploadedFilename + ".json"
         outputJsonFile2 = summaryOutputPrefix + uploadedFilename + ".txt"
         
@@ -62,7 +62,7 @@ def lambda_handler(event, context):
             parsedOutput = parsedOutput + '-\nfields\n'
             parsedOutput = parsedOutput + '-----------------------------------------------------\n'
             for field in page.form.fields:
-                parsedOutput = parsedOutput + field.key.text + ': ' + field.value.text + '\n'
+                parsedOutput = parsedOutput + field.key.text + ', ' + field.value.text + '\n'
             parsedOutput = parsedOutput + '\n'
     
         # Print to the application log

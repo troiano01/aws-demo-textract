@@ -61,7 +61,7 @@ The overall architecture follows the [AWS Sample Code for Large scale document p
 
 ## Create a Subscription to the SNS Topic
 1. Protocol = Amazon SQS
-2. Endpoint = the ARN for the SQS queue, textractDemoQbr /><br />
+2. Endpoint = the ARN for the SQS queue, textractDemoQ<br /><br />
 
 ![textractDemoCompletionTopicSub Screenshot](./images/textractDemoCompletionTopicSub.png)
 <br /><br />
@@ -133,7 +133,7 @@ zip python-layer.zip -r python-layer/
 
 ![textractDemoPythonLayer screenshot](./images/textractDemoPythonLayer.png)<br /><br />
 
-## Sync Lambda Function
+## Create the Synchronous Operations Lambda Function
 1. Create a new function called textractDemoSync
 2. Author from Scratch
 3. Runtime = Python 3.7
@@ -143,6 +143,7 @@ zip python-layer.zip -r python-layer/
 ![textractDemoSync screenshot](./images/textractDemoSync.png)<br /><br />
 
 4. In the Code tab, replace the example function with the following code.
+    - Update the SNS Topic's Endpoint ARN, toward the bottom
 ```
 import json
 import boto3
@@ -271,6 +272,8 @@ Add a Trigger to the Lambda function<br /><br />
 ![textractDemoSyncSQSTrigger screenshot](./images/textractDemoSyncSQSTrigger.png)<br /><br />
 
 ## S3 Upload
+- Be sure to save the Lambda code and click Deploy
+- After running, go to CloudWatch and look at the Lambda function's Log Group for execution results
 ```
 import boto3
 
