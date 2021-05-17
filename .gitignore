@@ -1,4 +1,4 @@
-## Ignore Visual Studio Code files and others.
+# Ignore Visual Studio Code files and others.
 .vscode/
 
 # Primary workspace
