@@ -164,7 +164,14 @@ zip python-layer.zip -r python-layer/
 
 4. In the Code tab, replace the example function with the following code.
     - Update the SNS Topic's Endpoint ARN, toward the bottom
-```
+5. Configuration tab, choose General configuration and set the timeout to 10 sec
+<br /><br />
+
+<details>
+
+<summary>Lambda Function: Click to expand...</summary><br /><br />
+
+```python
 import json
 import boto3
 import os
@@ -273,8 +280,8 @@ def textract2Sns(output_body):
         return(e)
 
 ```
-
-5. Configuration tab, choose General configuration and set the timeout to 10 sec
+</details>
+<br /><br />
 
 ## Add the Lambda Layer 
 In the Layers section choose Add Layer<br /><br />
