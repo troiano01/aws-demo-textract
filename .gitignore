@@ -1,5 +1,5 @@
 ## Ignore Visual Studio Code files and others.
-.vscode
+.vscode/
 
 # Primary workspace
 *.code-workspace
@@ -7,6 +7,7 @@
 # Lambda Layer Install Files
 *-layer.zip
 [Pp]ython-layer/
+[Pp]ython/
 
 # From other repo
 # https://github.com/aws-samples/amazon-textract-response-parser
