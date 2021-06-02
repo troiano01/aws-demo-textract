@@ -143,7 +143,7 @@ Add the following as an additional statement
 
 ## Lambda Layer Creation
 This section adds the example Textract Parser code and boto3 library, following instructions on the Textract Parser example GitHub repo, mentioned above and in the Textract documentation section, [Creating an AWS Lambda Function](https://docs.aws.amazon.com/textract/latest/dg/lambda.html).
-1. Create a folder, python-layer and install the packages
+1. Install the packages into a new folder, python (using this folder structure [simplifies the path in your function code](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html#configuration-layers-path))
     ```
     pip install boto3 --target python/.
     python -m pip install amazon-textract-response-parser --target python
