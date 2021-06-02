@@ -353,3 +353,8 @@ for message in messages:
     print(msg['Message'])
     message.delete()
 ```
+
+## Run the Demo by Uploading a File to be Processed
+```
+python file-upload.py
+```
