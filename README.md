@@ -295,19 +295,19 @@ Update the role permissions by choosing Permissions from the list under the Conf
 ![textractDemoSync-role screenshot](./images/textractDemoSync-role.png)<br /><br />
 
 ## Add the SQS Event Trigger
-Add a Trigger to the Lambda function<br /><br />
-
+Add a Trigger to the Lambda function
+- Be sure to save the Lambda code and click Deploy<br /><br />
 ![textractDemoSyncSQSTrigger screenshot](./images/textractDemoSyncSQSTrigger.png)<br /><br />
 
 ## S3 Upload
-- Be sure to save the Lambda code and click Deploy
-- After running, go to CloudWatch and look at the Lambda function's Log Group for execution results
+- Create a shell script to upload the file to be processed, file-upload.py, using the following code
+- Modify the code for your AWS Profile, file name, and bucket name
 ```
 import boto3
 
 # AWS Profiles contain the region and output format (in .aws/config) and the 
 # access and secret keys (in .aws/credentials)
-session = boto3.session.Session( profile_name = 'aws-main' )
+session = boto3.session.Session( profile_name = 'aws-demo-main' )
 
 # Define the S3 rersource
 s3 = session.resource( 's3' )
@@ -329,13 +329,15 @@ s3.meta.client.upload_file(
 ```
 
 ## Pull the Completion Message from SQS
+- Create a shell script to read the completion message from the queue, read-queue.py, using the following code
+- Modify the code for your AWS Profile
 ```
 import boto3
 import json
 
 # The AWS Profile contains the region and output format (in .aws/config) and the 
 # access and secret keys (in .aws/credentials)
-session = boto3.session.Session( profile_name = 'aws-main' )
+session = boto3.session.Session( profile_name = 'aws-demo-main' )
 
 # Get the service resource
 sqs = session.resource( 'sqs' )
@@ -353,6 +355,12 @@ for message in messages:
 ```
 
 ## Run the Demo by Uploading a File to be Processed
+- After running, go to CloudWatch and look at the Lambda function's Log Group for execution results
 ```
 python file-upload.py
+```
+
+## Read the Completion Message from the Queue
+```
+python read-queue.py
 ```
