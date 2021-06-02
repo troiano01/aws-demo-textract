@@ -15,7 +15,7 @@ The overall architecture follows the [AWS Sample Code for Large scale document p
 - AWS Account
 - [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 - [AWS profile configured for access](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html)
-- [Python 3 installed](https://docs.python.org/3.8/using/unix.html#getting-and-installing-the-latest-version-of-python) or optionally, if you use conda, [create an environment and activate it](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#)
+- [Python 3.8+ installed](https://docs.python.org/3.8/using/unix.html#getting-and-installing-the-latest-version-of-python) or optionally, if you use conda, [create an environment and activate it](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#)
   ```
   conda create -n aws-demo-textract python=3.8
   conda activate aws-demo-textract
